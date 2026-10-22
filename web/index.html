@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A working technical guide to brand extraction, AI email creation and Brew's embedded canvas inside a hotel marketing application."
+    />
+    <link rel="icon" href="/favicon.svg" />
+    <title>Sojern × Brew — Integration lab</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a
+        class="wordmark"
+        href="#workspace"
+        data-view="workspace"
+        aria-label="Brew integration lab"
+        >brew<span>.</span></a
+      ><span class="partner"
+        >FOR SOJERN <span class="tiny-dot"></span> INTEGRATION LAB</span
+      >
+      <nav aria-label="Main navigation">
+        <button class="nav active" data-view="workspace">Live workspace</button
+        ><button class="nav" data-view="implementation">Implementation</button
+        ><button class="nav" data-view="agents">Agent prompts</button>
+      </nav>
+      <a
+        class="header-docs"
+        href="https://docs.brew.new/sdks/typescript/white-label-email-editor"
+        target="_blank"
+        rel="noopener"
+        >SDK docs →</a
+      >
+    </header>
+    <main>
+      <section class="page active" id="workspace-page">
+        <div class="intro">
+          <div>
+            <h1>Hotel email studio.</h1>
+            <p>
+              Extract a brand. Create and refine an email. Edit it in the
+              canvas.
+            </p>
+          </div>
+          <span class="live-label" id="connection-status"
+            >Connect your Brew account</span
+          >
+        </div>
+        <div id="notice" class="notice" role="status" hidden></div>
+        <div id="error" class="notice error" role="alert" hidden></div>
+        <section class="connection-panel" aria-label="Brew connection">
+          <form id="connection-form">
+            <div>
+              <label for="api-key">BREW API KEY</label
+              ><input
+                id="api-key"
+                type="password"
+                placeholder="brew_…"
+                autocomplete="off"
+                spellcheck="false"
+                required
+              />
+            </div>
+            <div>
+              <label for="client-id"
+                >CANVAS CLIENT ID <span class="optional">optional</span></label
+              ><input
+                id="client-id"
+                placeholder="brew_client_…"
+                autocomplete="off"
+                spellcheck="false"
+                pattern="brew_client_[0-9a-f]{32}"
+              />
+            </div>
+            <button class="button primary" id="connect-button" type="submit">
+              Connect</button
+            ><button class="button" id="disconnect" type="button" hidden>
+              Disconnect
+            </button>
+          </form>
+          <p class="hint" id="credentials-hint">
+            Your API key stays in this page’s memory and is sent over HTTPS to
+            this app’s backend. It is never stored or sent to the canvas. Use a
+            key with brands and emails permissions.
+          </p>
+          <p class="hint">
+            For a client ID, allow <code id="allowed-origin"></code> and enable
+            editing in Brew → Settings → API → Client apps. Choose All brands or
+            one specific brand there. Leave blank to use an editable API-key
+            session.
+          </p>
+        </section>
+        <div class="workspace">
+          <aside class="control-panel">
+            <div class="section-label">BUILD AN EMAIL</div>
+            <div class="steps" role="tablist" aria-label="Authoring steps">
+              <button
+                class="step active"
+                data-step="brand"
+                role="tab"
+                aria-selected="true"
+              >
+                <b>01</b><span>Brand</span></button
+              ><button
+                class="step"
+                data-step="generate"
+                role="tab"
+                aria-selected="false"
+              >
+                <b>02</b><span>Create</span></button
+              ><button
+                class="step"
+                data-step="refine"
+                role="tab"
+                aria-selected="false"
+              >
+                <b>03</b><span>Refine</span></button
+              ><button
+                class="step"
+                data-step="save"
+                role="tab"
+                aria-selected="false"
+              >
+                <b>04</b><span>Save</span>
+              </button>
+            </div>
+            <div class="step-panel active" id="brand-step" role="tabpanel">
+              <div class="panel-heading">
+                <h2>Extract a brand.</h2>
+                <p>
+                  The website becomes a saved brand identity and design system.
+                </p>
+              </div>
+              <label for="brand-select">YOUR BRANDS</label
+              ><select id="brand-select" aria-label="Selected brand">
+                <option value="">Connect to load brands</option></select
+              ><button id="more-brands" class="text-button" hidden>
+                Load more brands
+              </button>
+              <div class="divider"></div>
+              <form id="extract-form">
+                <label for="hotel-url">HOTEL WEBSITE</label>
+                <div class="input-wrap">
+                  <input
+                    id="hotel-url"
+                    type="url"
+                    placeholder="https://your-hotel.com"
+                    required
+                    autocomplete="url"
+                  />
+                </div>
+                <button class="button primary wide" type="submit">
+                  Extract brand
+                </button>
+              </form>
+              <p class="hint">
+                Extraction uses your account’s brand capacity. Existing brands
+                appear above.
+              </p>
+              <div class="divider"></div>
+              <div class="panel-heading compact">
+                <h3>Brand context</h3>
+                <span id="brand-status" class="status-pill">Not connected</span>
+              </div>
+              <button id="refresh-state" class="text-button">
+                Refresh live state ↻
+              </button>
+              <div id="brand-summary" class="brand-summary">
+                Connect your account, then select or extract a brand.
+              </div>
+              <details class="advanced">
+                <summary>Read & update brand information</summary>
+                <form id="brand-form">
+                  <label for="brand-name">Brand name</label
+                  ><input id="brand-name" /><label for="brand-tagline"
+                    >Tagline</label
+                  ><input id="brand-tagline" /><label for="brand-description"
+                    >Description</label
+                  ><textarea id="brand-description" rows="5"></textarea
+                  ><button type="submit" class="button wide">
+                    Save brand information
+                  </button>
+                </form>
+                <details>
+                  <summary>Design guidance</summary>
+                  <p class="hint">
+                    These fields replace the entire saved Markdown document.
+                  </p>
+                  <form id="design-form">
+                    <label for="email-design">Email design</label
+                    ><textarea
+                      id="email-design"
+                      class="mono"
+                      rows="8"
+                    ></textarea
+                    ><label for="image-style">Image style</label
+                    ><textarea id="image-style" class="mono" rows="6"></textarea
+                    ><button type="submit" class="button wide">
+                      Save design guidance
+                    </button>
+                  </form>
+                </details>
+              </details>
+            </div>
+            <div class="step-panel" id="generate-step" role="tabpanel">
+              <div class="panel-heading">
+                <h2>Create an email.</h2>
+                <p>Brew uses the saved hotel brand automatically.</p>
+              </div>
+              <form id="generate-form">
+                <label for="generate-subject"
+                  >SUBJECT LINE
+                  <span class="optional">in the target language</span></label
+                ><input
+                  id="generate-subject"
+                  value="Your next neighbourhood escape starts here"
+                  maxlength="250"
+                  required
+                /><label for="template-reference">TEMPLATE</label>
+                <div class="template-row">
+                  <input
+                    id="template-reference"
+                    placeholder="Choose an email in the canvas"
+                    readonly
+                  /><button
+                    class="button small"
+                    id="use-reference"
+                    type="button"
+                  >
+                    Use selected</button
+                  ><button
+                    class="text-button"
+                    id="clear-reference"
+                    type="button"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <p class="hint" id="reference-hint">
+                  Optional: remix the selected email. The reference API uses its
+                  latest saved version.
+                </p>
+                <label for="locale">LANGUAGE</label
+                ><select id="locale">
+                  <option value="">Follow the brief</option>
+                  <option value="en-US">English (US)</option>
+                  <option value="en-GB">English (UK)</option>
+                  <option value="es-ES">Spanish</option>
+                  <option value="fr-FR">French</option>
+                  <option value="de-DE">German</option>
+                  <option value="it-IT">Italian</option>
+                  <option value="pt-BR">Portuguese (Brazil)</option>
+                  <option value="ja-JP">Japanese</option>
+                  <option value="ar">Arabic</option></select
+                ><label for="generate-prompt">CREATIVE BRIEF</label
+                ><textarea id="generate-prompt" rows="9" required>
+Create a concise, on-brand newsletter for the selected brand for guests who opted in to hotel updates. Theme: your next neighbourhood escape. Use the approved website facts and brand assets. Include one hero and one clear CTA. Do not invent rates, discounts, dates, amenities or availability. Design only; do not send.</textarea
+                ><button type="submit" class="button primary wide">
+                  Create email
+                </button>
+              </form>
+              <p class="hint">
+                Uses Brew credits. The request waits for the saved result. Keep
+                the returned email and version IDs.
+              </p>
+              <div class="code-card">
+                <div>
+                  <span>SERVER-SIDE SDK</span
+                  ><button
+                    class="copy-icon"
+                    data-copy="generate"
+                    aria-label="Copy generation example"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre data-code="generate"></pre>
+              </div>
+            </div>
+            <div class="step-panel" id="refine-step" role="tabpanel">
+              <div class="panel-heading">
+                <h2>Refine the email.</h2>
+                <p>
+                  Use a prompt for a new version, or edit the canvas by hand.
+                </p>
+              </div>
+              <form id="edit-form">
+                <label for="edit-prompt">AI EDIT</label
+                ><textarea id="edit-prompt" rows="7" required>
+Keep the layout and hotel branding. Shorten the introduction to two short sentences and change the primary CTA to “Explore your next stay”. Preserve approved factual claims and existing imagery.</textarea
+                ><button type="submit" class="button primary wide">
+                  Apply edit
+                </button>
+              </form>
+              <p class="hint">
+                Uses Brew credits and creates a new version. This app saves and
+                releases manual editing first; the canvas stays mounted. AI
+                edits are never automatically retried.
+              </p>
+              <div class="callout">
+                <b>Prefer a hands-on change?</b>
+                <p>
+                  Click the email to select it. Triple-click a heading to
+                  replace its text, or select an image to inspect and crop it.
+                </p>
+              </div>
+              <div class="code-card">
+                <div>
+                  <span>SERVER-SIDE SDK</span
+                  ><button
+                    class="copy-icon"
+                    data-copy="edit"
+                    aria-label="Copy edit example"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre data-code="edit"></pre>
+              </div>
+            </div>
+            <div class="step-panel" id="save-step" role="tabpanel">
+              <div class="panel-heading">
+                <h2>Save & retrieve HTML.</h2>
+                <p>
+                  Flush pending edits, read the saved version, and pass its HTML
+                  to your existing delivery workflow.
+                </p>
+              </div>
+              <ol class="save-list">
+                <li>
+                  <b>Await <code>flush()</code></b
+                  ><span>Keep the editor open if saving fails.</span>
+                </li>
+                <li>
+                  <b>Retain the save receipt</b
+                  ><span
+                    >The email ID and exact version ID identify the
+                    result.</span
+                  >
+                </li>
+                <li>
+                  <b>Read HTML on your backend</b
+                  ><span>Recheck hotel ownership before returning it.</span>
+                </li>
+              </ol>
+              <button id="read-html" class="button primary wide">
+                Inspect saved HTML
+              </button>
+              <p class="hint">
+                No email is sent. Use the HTML with your current ESP or approval
+                process.
+              </p>
+              <div class="code-card">
+                <div>
+                  <span>READ THE SAVED VERSION</span
+                  ><button
+                    class="copy-icon"
+                    data-copy="html"
+                    aria-label="Copy HTML read example"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre data-code="html"></pre>
+              </div>
+            </div>
+            <div class="panel-foot">
+              Changes save automatically. Save & HTML waits for persistence.
+            </div>
+          </aside>
+          <section
+            class="preview-panel"
+            aria-label="Embedded designer workspace"
+          >
+            <div class="preview-heading">
+              <div>
+                <h2 id="hotel-name">Your email canvas</h2>
+                <p id="hotel-domain">Select a brand and email to begin.</p>
+              </div>
+              <div class="preview-status">
+                <span class="live-dot"></span
+                ><span id="canvas-status">Not connected</span>
+              </div>
+            </div>
+            <div class="preview-toolbar">
+              <div id="email-picker"></div>
+              <button id="rename-email" class="text-button" type="button">
+                Rename email</button
+              ><button id="more-emails" class="text-button" hidden>
+                Load more emails
+              </button>
+              <div class="toolbar-actions">
+                <button
+                  id="fit"
+                  class="button icon small"
+                  aria-label="Fit canvas"
+                >
+                  ⤢</button
+                ><button id="reopen" class="button small">Reopen</button
+                ><button id="save" class="button small dark">
+                  Save & HTML
+                </button>
+              </div>
+            </div>
+            <div id="canvas" class="canvas">
+              <div class="canvas-empty">
+                Connect your Brew account to start.
+              </div>
+            </div>
+            <div class="preview-footer">
+              <span><span class="live-dot"></span> Brew-hosted canvas</span
+              ><span id="version-label">No email selected</span>
+            </div>
+          </section>
+        </div>
+        <section class="request-panel">
+          <button id="trace-toggle" class="trace-toggle" aria-expanded="false">
+            <span
+              ><span class="trace-dot"></span> Request inspector
+              <small>Actual API calls, status codes and IDs</small></span
+            ><span>＋</span>
+          </button>
+          <div id="trace-content" hidden>
+            <div class="trace-head">
+              <span id="trace-label">Latest live request</span
+              ><button id="copy-result" class="text-button">Copy result</button>
+            </div>
+            <div id="trace-list"></div>
+            <pre id="trace-result">Waiting for a response…</pre>
+          </div>
+        </section>
+        <div class="workspace-note">
+          <span>Built on your existing application.</span
+          ><a href="#implementation" data-view="implementation"
+            >See the four implementation tasks →</a
+          >
+        </div>
+      </section>
+      <section class="page" id="implementation-page">
+        <div class="doc-intro">
+          <div class="eyebrow">SMALL INTEGRATION. COMPLETE WORKFLOW.</div>
+          <h1>Build it into your app.</h1>
+          <p>
+            Keep Sojern’s login, hotel records, and delivery system. Add one
+            server client, a few authorized routes, and an embedded canvas.
+          </p>
+          <div class="download-row">
+            <a
+              class="button primary"
+              href="/sojern-implementation-guide.pdf"
+              target="_blank"
+              rel="noopener"
+              >Download PDF ↗</a
+            ><a class="button" href="/sojern-implementation-guide.md" download
+              >Download Markdown ↓</a
+            ><a class="button" href="/headless-email-studio.zip" download
+              >Download example app ↓</a
+            ><a
+              class="button"
+              href="https://github.com/GetBrew/sojern-brew-demo"
+              target="_blank"
+              rel="noopener"
+              >GitHub source ↗</a
+            >
+          </div>
+        </div>
+        <div id="implementation-content"></div>
+      </section>
+      <section class="page" id="agents-page">
+        <div class="doc-intro">
+          <div class="eyebrow">COPY. ASSIGN. VERIFY.</div>
+          <h1>Give your agents a clear brief.</h1>
+          <p>
+            Four tasks, in order. Each prompt uses your existing infrastructure
+            and includes its acceptance criteria. Bind credentials through your
+            secret manager.
+          </p>
+        </div>
+        <div id="agent-content"></div>
+      </section>
+      <dialog id="rename-dialog">
+        <form id="rename-form">
+          <h2 id="rename-heading">Rename</h2>
+          <label for="rename-name">NAME</label
+          ><input id="rename-name" required maxlength="200" />
+          <div class="dialog-actions">
+            <button class="button" type="button" id="rename-cancel">
+              Cancel</button
+            ><button class="button primary" type="submit">Save name</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+    <footer class="site-footer">
+      <span>brew. <i>×</i> Sojern integration lab</span>
+      <div>
+        <a
+          href="https://docs.brew.new/sdks/typescript/white-label-email-editor"
+          target="_blank"
+          rel="noopener"
+          >Canonical guide ↗</a
+        ><a
+          href="https://github.com/GetBrew/typescript-sdk"
+          target="_blank"
+          rel="noopener"
+          >Open-source SDK ↗</a
+        ><span>Demo only · no sends</span>
+      </div>
+    </footer>
+    <dialog id="html-dialog" class="html-dialog">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow">PERSISTED OUTPUT</span>
+          <h2>Saved email HTML</h2>
+        </div>
+        <button class="close-dialog" aria-label="Close saved HTML">×</button>
+      </div>
+      <div id="html-meta" class="html-meta"></div>
+      <div class="download-row">
+        <button id="copy-html" class="button">Copy HTML</button
+        ><button id="download-html" class="button primary">
+          Download HTML ↓
+        </button>
+      </div>
+      <pre id="html-source"></pre>
+    </dialog>
+    <div id="busy" class="busy" role="status" hidden>
+      <span class="spinner"></span>
+      <div>
+        <b id="busy-title">Working with Brew…</b>
+        <p id="busy-description">
+          This can take a moment. Your design stays saved.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

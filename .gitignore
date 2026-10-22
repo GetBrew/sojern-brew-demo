@@ -1,0 +1,12 @@
+node_modules/
+.vercel/
+.env*
+!.env.example
+.artifacts/
+VALIDATION.md
+public/app.js
+public/brew-embed.js
+public/index.html
+public/styles.css
+public/favicon.svg
+public/sojern-implementation-guide.md

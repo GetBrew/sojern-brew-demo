@@ -1,0 +1,32 @@
+{
+  "name": "sojern-brew-live-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm run typecheck && node build.mjs",
+    "dev": "node --env-file-if-exists=.env.local dev.mjs",
+    "test": "node scripts/test.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run format:check && npm run typecheck && npm test && node build.mjs",
+    "format": "prettier --write web api lib tests scripts/*.mjs *.mjs *.json README.md",
+    "format:check": "prettier --check web api lib tests scripts/*.mjs *.mjs *.json README.md"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "dependencies": {
+    "@brew.new/sdk": "13.2.0",
+    "@radix-ui/react-dropdown-menu": "2.1.16",
+    "esbuild": "0.25.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "prettier": "3.8.3",
+    "typescript": "6.0.2"
+  }
+}
