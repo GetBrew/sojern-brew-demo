@@ -6,7 +6,6 @@ Source: [https://github.com/GetBrew/sojern-brew-demo](https://github.com/GetBrew
 
 Start with [Antonio's POC guide](docs/POC-GUIDE.md). It covers the first live
 test, local setup, the four implementation milestones and acceptance checks.
-Use [the message draft](docs/ANTONIO-MESSAGE.md) when sharing the handoff.
 Coding agents should read [AGENTS.md](AGENTS.md) before changing this repository;
 the [detailed guide](web/implementation-guide.md#prompts-for-implementation-agents)
 contains the complete implementation prompts for Sojern's application.

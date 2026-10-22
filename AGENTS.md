@@ -89,7 +89,7 @@ python3 scripts/package-source.py
 PDF regeneration needs ReportLab and DejaVu Sans fonts. Normal Node builds use
 the committed PDF and reject a stale handout. Commit the PDF, handout manifest
 and refreshed source ZIP when their inputs change. CI checks archive contents.
-Update the focused POC guide and message when the customer-facing path changes.
+Update the focused POC guide when the customer-facing path changes.
 
 Vercel uses Node 24, `npm ci --ignore-scripts`, `npm run build` and output
 `public`. Configure only the host's exact `DEMO_ORIGIN` and a random
