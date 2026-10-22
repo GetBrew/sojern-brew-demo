@@ -4,6 +4,11 @@ Technical implementation brief · 22 October 2026 · SDK baseline: `@brew.new/sd
 
 Use the live Copy controls or Markdown download for code and complete agent briefs. The PDF is the portable reading handoff.
 
+For Antonio's first test and POC implementation path, start with the
+[POC quick-start guide](https://sojern-brew-demo.vercel.app/sojern-poc-guide.md).
+The [standalone source repository](https://github.com/GetBrew/sojern-brew-demo)
+includes `AGENTS.md`, local setup, CI and the complete handoff.
+
 ## Try the headless integration lab
 
 Open https://sojern-brew-demo.vercel.app. Enter your own Brew API key in the connection form. No Brew login or fixed demo organization is used. The app discovers brands and emails within that key’s authority, including brand-scoped keys. Organization keys with `brands` and `emails` permissions can extract new brands; existing account capacity and credit limits apply.

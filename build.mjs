@@ -14,6 +14,7 @@ await copyFile(
   "web/implementation-guide.md",
   "public/sojern-implementation-guide.md",
 );
+await copyFile("docs/POC-GUIDE.md", "public/sojern-poc-guide.md");
 await build({
   entryPoints: ["web/app.ts"],
   outfile: "public/app.js",

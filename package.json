@@ -9,8 +9,8 @@
     "test": "node scripts/test.mjs",
     "typecheck": "tsc --noEmit",
     "check": "npm run format:check && npm run typecheck && npm test && node build.mjs",
-    "format": "prettier --write web api lib tests scripts/*.mjs *.mjs *.json README.md",
-    "format:check": "prettier --check web api lib tests scripts/*.mjs *.mjs *.json README.md"
+    "format": "prettier --write web api lib docs tests scripts/*.mjs *.mjs *.json README.md AGENTS.md .github/workflows",
+    "format:check": "prettier --check web api lib docs tests scripts/*.mjs *.mjs *.json README.md AGENTS.md .github/workflows"
   },
   "engines": {
     "node": ">=22.18.0"

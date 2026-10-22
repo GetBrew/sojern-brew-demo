@@ -1,8 +1,8 @@
 from pathlib import Path
 import hashlib, json, re, zipfile
 root = Path(__file__).resolve().parent.parent
-source = ['api/demo.ts', 'lib/security.ts', 'lib/contracts.ts', 'tsconfig.json', '.env.example', '.nvmrc', 'build.mjs', 'dev.mjs', 'package.json', 'package-lock.json', 'vercel.json', 'README.md', '.gitignore', '.vercelignore']
-for folder in ['web', 'scripts', 'tests']:
+source = ['api/demo.ts', 'lib/security.ts', 'lib/contracts.ts', 'tsconfig.json', '.env.example', '.nvmrc', 'build.mjs', 'dev.mjs', 'package.json', 'package-lock.json', 'vercel.json', 'README.md', 'AGENTS.md', '.github/workflows/ci.yml', '.gitignore', '.vercelignore']
+for folder in ['web', 'scripts', 'tests', 'docs']:
     source += sorted(str(p.relative_to(root)) for p in (root/folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts)
 source += ['public/sojern-implementation-guide.pdf']
 for name in source:

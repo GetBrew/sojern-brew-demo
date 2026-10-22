@@ -4,6 +4,13 @@ A small, working integration guide and email studio for any Brew account. Hosted
 
 Source: [https://github.com/GetBrew/sojern-brew-demo](https://github.com/GetBrew/sojern-brew-demo). The standalone repository belongs to GetBrew. The live demo and source ZIP are public.
 
+Start with [Antonio's POC guide](docs/POC-GUIDE.md). It covers the first live
+test, local setup, the four implementation milestones and acceptance checks.
+Use [the message draft](docs/ANTONIO-MESSAGE.md) when sharing the handoff.
+Coding agents should read [AGENTS.md](AGENTS.md) before changing this repository;
+the [detailed guide](web/implementation-guide.md#prompts-for-implementation-agents)
+contains the complete implementation prompts for Sojern's application.
+
 The live workspace, implementation guide and agent prompts are public. Download the [Markdown](https://sojern-brew-demo.vercel.app/sojern-implementation-guide.md), [PDF](https://sojern-brew-demo.vercel.app/sojern-implementation-guide.pdf) or [complete example source](https://sojern-brew-demo.vercel.app/headless-email-studio.zip) without signing in. Supply your own Brew credentials to run account actions.
 
 Enter an API key in the UI, discover your brands, extract a website, create/AI-edit emails, remix a selected template into another language, rename groups/emails, manually edit the embedded canvas, and retrieve exact saved HTML. No login provider, database, fixed organization, sample IDs, sending, or automatic AI-edit retries.
@@ -67,4 +74,4 @@ Edit `web/implementation-guide.md` first. The build extracts its four complete a
 
 To regenerate the PDF after editing the guide, install ReportLab and the DejaVu Sans fonts in a Python/Linux environment and run `python3 scripts/build-pdf.py`. The normal Node build needs no Python; it checks the included PDF and content manifest and fails if the handout is stale. Then run `npm run check` and `python3 scripts/package-source.py` to refresh the downloadable source. The source archive uses an explicit allowlist and rejects API-key patterns. Do not include `.artifacts`, credentials or local environment files in a deployment or archive.
 
-The implementation guide includes the demo sequence, account requirements, current API boundaries and pilot acceptance checks. It distinguishes earlier extraction evidence, the current production checks and configuration-dependent paths. The private `VALIDATION.md` records release evidence and is excluded from public downloads.
+The implementation guide includes the demo sequence, account requirements, current API boundaries and pilot acceptance checks. It distinguishes earlier extraction evidence, the current production checks and configuration-dependent paths. Record validation evidence for your own deployment using the POC guide's acceptance checks.
